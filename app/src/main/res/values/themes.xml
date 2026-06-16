@@ -1,0 +1,18 @@
+<resources>
+    <style name="Theme.AlarmClock" parent="android:Theme.Material.NoActionBar">
+        <!-- Light status bar (page background) with dark icons, matching Figma. -->
+        <item name="android:statusBarColor">#F7F7F9</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+    </style>
+
+    <!-- Fullscreen theme for the alarm ringing screen -->
+    <style name="Theme.AlarmClock.Fullscreen" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+</resources>

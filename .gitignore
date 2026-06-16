@@ -1,0 +1,32 @@
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Build directories
+build/
+.gradle/
+
+# Local configuration
+local.properties
+*.jks
+*.keystore
+
+# IDE files
+.idea/
+*.iml
+.DS_Store
+*.swp
+*.orig
+
+# Gradle wrapper (keep gradlew scripts, ignore cache)
+.gradle/
+
+# Claude/AI working files
+.claude/
+
+# Temporary files
+screenshot.png
+build_error.txt
+make_icon.swift
