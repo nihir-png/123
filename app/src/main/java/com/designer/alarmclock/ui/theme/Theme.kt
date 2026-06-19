@@ -36,12 +36,14 @@ fun AlarmClockTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val appColors = if (darkTheme) DarkAppColors else LightAppColors
 
     CompositionLocalProvider(
         LocalSpacing provides Spacing(),
+        LocalAppColors provides appColors,
         // Make Urbanist the default for every Text(), even ones without an
         // explicit style. Body/secondary text opts into Inter where needed.
-        LocalTextStyle provides DefaultTextStyle
+        LocalTextStyle provides DefaultTextStyle.copy(color = appColors.textPrimary)
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

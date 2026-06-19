@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Alarm Clock</string>
+
+    <string name="tab_alarm">Alarme</string>
+    <string name="tab_clock">Horloge</string>
+    <string name="tab_timer">Minuteur</string>
+    <string name="tab_stopwatch">Chronomètre</string>
+
+    <string name="action_done">Terminé</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_select">Sélectionner</string>
+    <string name="action_start">Démarrer</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Reprendre</string>
+    <string name="action_reset">Réinitialiser</string>
+    <string name="action_lap">Tour</string>
+
+    <string name="cd_settings">Paramètres</string>
+    <string name="cd_back">Retour</string>
+    <string name="cd_add_alarm">Ajouter une alarme</string>
+    <string name="cd_delete_alarm">Supprimer l\'alarme</string>
+    <string name="cd_add_city">Ajouter une ville</string>
+    <string name="cd_remove_city">Retirer la ville</string>
+    <string name="cd_menu">Menu</string>
+
+    <string name="alarm_empty_title">Aucune alarme</string>
+    <string name="alarm_empty_subtitle">Ajoutez une alarme pour commencer</string>
+    <string name="delete_alarm_title">Supprimer l\'alarme ?</string>
+    <string name="delete_alarm_message">Cette alarme sera supprimée définitivement.</string>
+
+    <string name="add_alarm_title">Ajouter une alarme</string>
+    <string name="edit_alarm_title">Modifier l\'alarme</string>
+    <string name="tap_to_set_time">APPUYEZ POUR RÉGLER L\'HEURE</string>
+    <string name="alarm_label_hint">Nom de l\'alarme (ex. Réveil)</string>
+    <string name="repeat">Répéter</string>
+    <string name="vibrate_on_ring">Vibrer à la sonnerie</string>
+    <string name="snooze">Répétition</string>
+    <string name="ringtone">Sonnerie</string>
+    <string name="save_alarm">Enregistrer l\'alarme</string>
+    <string name="set_alarm_time">Régler l\'heure</string>
+    <string name="snooze_minutes">%1$d min</string>
+
+    <string name="clock_title">Horloge</string>
+    <string name="local_time">Heure locale</string>
+    <string name="world_clock">Horloge mondiale</string>
+    <string name="no_cities_title">Aucune ville</string>
+    <string name="no_cities_subtitle">Suivez l\'heure dans plusieurs endroits du monde.</string>
+    <string name="select_city">Sélectionner une ville</string>
+    <string name="city_added">Ajoutée</string>
+    <string name="same_time">Même heure</string>
+
+    <string name="timer_title">Minuteur</string>
+    <string name="timer_hours">Heures</string>
+    <string name="timer_minutes">Minutes</string>
+    <string name="timer_seconds">Secondes</string>
+    <string name="timer_times_up">Temps écoulé !</string>
+
+    <string name="stopwatch_title">Chronomètre</string>
+    <string name="stopwatch_laps_empty">Les tours s\'afficheront ici</string>
+
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_section_general">Général</string>
+    <string name="settings_section_alarm_defaults">Valeurs par défaut</string>
+    <string name="settings_section_notifications">Notifications et alarme</string>
+    <string name="settings_section_app">Application</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_theme">Thème</string>
+    <string name="settings_time_format">Format de l\'heure</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_system">Par défaut du système</string>
+    <string name="language_system">Par défaut du système</string>
+    <string name="time_format_12">12 heures</string>
+    <string name="time_format_24">24 heures</string>
+    <string name="time_format_12_long">12 heures (AM/PM)</string>
+    <string name="time_format_24_long">24 heures</string>
+    <string name="settings_default_ringtone">Sonnerie par défaut</string>
+    <string name="ringtone_default_system">Par défaut (Système)</string>
+    <string name="settings_vibrate_default">Vibrer par défaut</string>
+    <string name="settings_default_snooze">Répétition par défaut</string>
+    <string name="settings_default_volume">Volume d\'alarme par défaut</string>
+    <string name="settings_alarm_notifications">Notifications d\'alarme</string>
+    <string name="notif_enabled">Activées</string>
+    <string name="notif_disabled">Désactivées — appuyez pour autoriser</string>
+    <string name="settings_fullscreen_alarm">Alarme plein écran</string>
+    <string name="fullscreen_allowed">Autorisée</string>
+    <string name="fullscreen_tap_allow">Appuyez pour autoriser</string>
+    <string name="settings_about">À propos de l\'app</string>
+    <string name="settings_version">Version de l\'app</string>
+    <string name="settings_privacy">Confidentialité et hors ligne</string>
+    <string name="about_title">À propos d\'Alarm Clock</string>
+    <string name="about_message">Un réveil épuré et rapide avec horloge mondiale, minuteur et chronomètre.\n\nConçu pour être simple dès le premier appui.</string>
+    <string name="privacy_title">Confidentialité et hors ligne</string>
+    <string name="privacy_message">Cette app fonctionne entièrement hors ligne. Vos alarmes et réglages restent sur votre appareil : rien n\'est collecté, suivi ni partagé. Pas de publicité ni de compte.</string>
+    <string name="select_alarm_sound">Choisir le son de l\'alarme</string>
+    <string name="snooze_minutes_long">%1$d minutes</string>
+
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_portuguese">Português</string>
+</resources>

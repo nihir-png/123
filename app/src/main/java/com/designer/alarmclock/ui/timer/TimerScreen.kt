@@ -9,8 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,16 +18,21 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.designer.alarmclock.R
 import com.designer.alarmclock.ui.theme.AlarmClockTheme
+import com.designer.alarmclock.ui.theme.Gold
 import com.designer.alarmclock.ui.theme.GoldButtonGradient
 import com.designer.alarmclock.ui.theme.GoldenYellowGradient
+import com.designer.alarmclock.ui.theme.LocalAppColors
 import com.designer.alarmclock.ui.theme.LocalSpacing
+
+private val OnGold = Color(0xFF1A1A1A)
 
 @Composable
 fun TimerScreen(
@@ -40,6 +43,7 @@ fun TimerScreen(
     val isRunning by viewModel.isRunning.collectAsState()
     val isFinished by viewModel.isFinished.collectAsState()
     val spacing = LocalSpacing.current
+    val appColors = LocalAppColors.current
     val scrollState = rememberScrollState()
 
     // Store original duration for reset action
@@ -52,11 +56,10 @@ fun TimerScreen(
 
     val showSetup = totalDuration == 0L && !isFinished
 
-    Scaffold { paddingValues ->
+    Scaffold(containerColor = appColors.background) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(horizontal = spacing.large)
                 .verticalScroll(scrollState),
@@ -73,20 +76,13 @@ fun TimerScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Timer",
+                    text = stringResource(R.string.timer_title),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = appColors.textPrimary
                     )
                 )
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menu",
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(spacing.large))
@@ -103,11 +99,11 @@ fun TimerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(vertical = spacing.medium)
                     ) {
-                        WheelPickerColumn(value = selectedHours, max = 23, label = "Hours", onValueChange = { selectedHours = it })
-                        Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFFB800), modifier = Modifier.padding(top = 20.dp))
-                        WheelPickerColumn(value = selectedMinutes, max = 59, label = "Minutes", onValueChange = { selectedMinutes = it })
-                        Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFFB800), modifier = Modifier.padding(top = 20.dp))
-                        WheelPickerColumn(value = selectedSeconds, max = 59, label = "Seconds", onValueChange = { selectedSeconds = it })
+                        WheelPickerColumn(value = selectedHours, max = 23, label = stringResource(R.string.timer_hours), onValueChange = { selectedHours = it })
+                        Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Gold, modifier = Modifier.padding(top = 20.dp))
+                        WheelPickerColumn(value = selectedMinutes, max = 59, label = stringResource(R.string.timer_minutes), onValueChange = { selectedMinutes = it })
+                        Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Gold, modifier = Modifier.padding(top = 20.dp))
+                        WheelPickerColumn(value = selectedSeconds, max = 59, label = stringResource(R.string.timer_seconds), onValueChange = { selectedSeconds = it })
                     }
 
                     Spacer(modifier = Modifier.height(spacing.large))
@@ -123,7 +119,7 @@ fun TimerScreen(
                             val chipBg = if (selected) {
                                 Modifier.background(GoldButtonGradient)
                             } else {
-                                Modifier.background(Color.White)
+                                Modifier.background(appColors.card)
                             }
                             Box(
                                 modifier = Modifier
@@ -139,10 +135,10 @@ fun TimerScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "$presetMinutes min",
+                                    text = stringResource(R.string.snooze_minutes, presetMinutes),
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (selected) Color(0xFF1E1E1E) else Color(0xFF7E7E7E)
+                                    color = if (selected) OnGold else appColors.textSecondary
                                 )
                             }
                         }
@@ -150,13 +146,13 @@ fun TimerScreen(
 
                     Spacer(modifier = Modifier.height(spacing.large))
 
-                    // Large white card showing selected time
+                    // Large card showing selected time
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(100.dp),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Box(
@@ -168,7 +164,7 @@ fun TimerScreen(
                                 text = timeStr,
                                 fontSize = 42.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E1E1E), // Bold dark charcoal
+                                color = appColors.textPrimary,
                                 letterSpacing = 1.sp
                             )
                         }
@@ -192,12 +188,12 @@ fun TimerScreen(
                             .background(GoldenYellowGradient, shape = RoundedCornerShape(28.dp)),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
-                            contentColor = Color(0xFF1E1E1E)
+                            contentColor = OnGold
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
                         Text(
-                            text = "Start",
+                            text = stringResource(R.string.action_start),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp
@@ -220,17 +216,18 @@ fun TimerScreen(
                     ) {
                         // Progress Arc
                         val progressFraction = if (totalDuration > 0) timeRemaining.toFloat() / totalDuration else 0f
-                        
+                        val trackColor = appColors.card
+
                         Canvas(modifier = Modifier.fillMaxSize()) {
                             val strokeWidth = 10.dp.toPx()
-                            
+
                             // Background track
                             drawCircle(
-                                color = Color.White,
+                                color = trackColor,
                                 radius = size.minDimension / 2 - strokeWidth,
                                 style = Stroke(width = strokeWidth)
                             )
-                            
+
                             // Yellow arc progress
                             drawArc(
                                 color = Color(0xFFFFB800),
@@ -254,7 +251,7 @@ fun TimerScreen(
                                 label = "pulse"
                             )
                             Text(
-                                text = "Time's Up!",
+                                text = stringResource(R.string.timer_times_up),
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.error,
@@ -266,12 +263,12 @@ fun TimerScreen(
                             val m = (totalSecondsRemaining % 3600) / 60
                             val s = totalSecondsRemaining % 60
                             val timeStr = String.format("%02d:%02d:%02d", h, m, s)
-                            
+
                             Text(
                                 text = timeStr,
                                 fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1E1E1E)
+                                color = appColors.textPrimary
                             )
                         }
                     }
@@ -294,11 +291,11 @@ fun TimerScreen(
                                 .height(50.dp),
                             shape = RoundedCornerShape(25.dp),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = Color(0xFF1E1E1E)
+                                contentColor = appColors.textPrimary
                             ),
                             border = ButtonDefaults.outlinedButtonBorder.copy(width = 1.dp)
                         ) {
-                            Text("Reset", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.action_reset), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         }
 
                         // Right: Pause / Resume / Done
@@ -313,11 +310,11 @@ fun TimerScreen(
                                     .background(GoldenYellowGradient, shape = RoundedCornerShape(25.dp)),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Transparent,
-                                    contentColor = Color(0xFF1E1E1E)
+                                    contentColor = OnGold
                                 ),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
-                                Text("Done", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.action_done), fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             }
                         } else {
                             Button(
@@ -334,12 +331,12 @@ fun TimerScreen(
                                     .background(GoldenYellowGradient, shape = RoundedCornerShape(25.dp)),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Transparent,
-                                    contentColor = Color(0xFF1E1E1E)
+                                    contentColor = OnGold
                                 ),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Text(
-                                    text = if (isRunning) "Pause" else "Resume",
+                                    text = if (isRunning) stringResource(R.string.action_pause) else stringResource(R.string.action_resume),
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -359,6 +356,7 @@ fun WheelPickerColumn(
     label: String,
     onValueChange: (Int) -> Unit
 ) {
+    val appColors = LocalAppColors.current
     val prev = if (value > 0) value - 1 else max
     val next = if (value < max) value + 1 else 0
 
@@ -370,16 +368,16 @@ fun WheelPickerColumn(
             text = label,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF7E7E7E),
+            color = appColors.textSecondary,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        
+
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
+            colors = CardDefaults.cardColors(containerColor = appColors.card),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(
@@ -392,7 +390,7 @@ fun WheelPickerColumn(
                     text = String.format("%02d", prev),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF7E7E7E).copy(alpha = 0.35f),
+                    color = appColors.textSecondary.copy(alpha = 0.5f),
                     modifier = Modifier.clickable { onValueChange(prev) }
                 )
                 // Selected value
@@ -400,14 +398,14 @@ fun WheelPickerColumn(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFFFB800).copy(alpha = 0.15f)),
+                        .background(Gold.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = String.format("%02d", value),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E1E1E)
+                        color = appColors.textPrimary
                     )
                 }
                 // Value below (faded)
@@ -415,7 +413,7 @@ fun WheelPickerColumn(
                     text = String.format("%02d", next),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF7E7E7E).copy(alpha = 0.35f),
+                    color = appColors.textSecondary.copy(alpha = 0.5f),
                     modifier = Modifier.clickable { onValueChange(next) }
                 )
             }
@@ -423,96 +421,14 @@ fun WheelPickerColumn(
     }
 }
 
-@Preview(name = "Timer Setup Light Theme", showSystemUi = true)
+@Preview(name = "Timer Setup Light", showSystemUi = true)
 @Composable
 fun TimerSetupLightPreview() {
-    AlarmClockTheme(darkTheme = false) {
-        TimerScreenPreviewHelper(totalDuration = 0L, timeRemaining = 0L, isFinished = false)
-    }
+    AlarmClockTheme(darkTheme = false) { TimerScreen() }
 }
 
-@Preview(name = "Timer Running Light Theme", showSystemUi = true)
+@Preview(name = "Timer Setup Dark", showSystemUi = true)
 @Composable
-fun TimerRunningLightPreview() {
-    AlarmClockTheme(darkTheme = false) {
-        TimerScreenPreviewHelper(totalDuration = 60000L, timeRemaining = 45000L, isFinished = false)
-    }
-}
-
-@Composable
-fun TimerScreenPreviewHelper(
-    totalDuration: Long,
-    timeRemaining: Long,
-    isFinished: Boolean
-) {
-    val spacing = LocalSpacing.current
-    Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues)
-                .padding(horizontal = spacing.large),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(spacing.medium))
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = spacing.small),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Timer", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 32.sp))
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
-                }
-            }
-
-            Spacer(modifier = Modifier.height(spacing.large))
-
-            if (totalDuration == 0L) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(spacing.medium),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = spacing.medium)
-                ) {
-                    WheelPickerColumn(value = 0, max = 23, label = "Hours", onValueChange = {})
-                    Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFFB800), modifier = Modifier.padding(top = 20.dp))
-                    WheelPickerColumn(value = 5, max = 59, label = "Minutes", onValueChange = {})
-                    Text(":", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFFB800), modifier = Modifier.padding(top = 20.dp))
-                    WheelPickerColumn(value = 0, max = 59, label = "Seconds", onValueChange = {})
-                }
-                Spacer(modifier = Modifier.height(spacing.large))
-                Card(
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("00:05:00", fontSize = 42.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1E1E))
-                    }
-                }
-                Spacer(modifier = Modifier.height(spacing.extraLarge))
-                Button(
-                    onClick = {},
-                    modifier = Modifier.fillMaxWidth().height(56.dp).background(GoldenYellowGradient, shape = RoundedCornerShape(28.dp)),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF1E1E1E)),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text("Start", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 18.sp))
-                }
-            } else {
-                Box(
-                    modifier = Modifier.size(260.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawCircle(color = Color.White, radius = size.minDimension / 2 - 20, style = Stroke(width = 20f))
-                        drawArc(color = Color(0xFFFFB800), startAngle = -90f, sweepAngle = 270f, useCenter = false, style = Stroke(width = 20f, cap = StrokeCap.Round))
-                    }
-                    Text("00:00:45", fontSize = 40.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1E1E))
-                }
-            }
-        }
-    }
+fun TimerSetupDarkPreview() {
+    AlarmClockTheme(darkTheme = true) { TimerScreen() }
 }

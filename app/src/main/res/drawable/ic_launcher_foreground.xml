@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Adaptive-icon foreground: the EXACT source artwork (custom_app_icon.png).
-  Inset reduced to 2% per side so the artwork fills ~96% of the canvas.
-  Android's adaptive icon system already applies its own safe-zone masking,
-  so this keeps the icon large and avoids excessive padding in the launcher.
+  Inset ~16% per side so the WHOLE gold rounded-square + clock fits inside the
+  launcher's circular/squircle mask instead of being zoomed in (which cropped
+  the gold frame). The gold gradient background fills the masked corners, so
+  there is NO white/empty padding ring — the icon stays gold edge-to-edge and
+  looks like custom_app_icon.png.
 -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@drawable/custom_app_icon"
-    android:insetLeft="2%"
-    android:insetTop="2%"
-    android:insetRight="2%"
-    android:insetBottom="2%" />
+    android:insetLeft="16%"
+    android:insetTop="16%"
+    android:insetRight="16%"
+    android:insetBottom="16%" />

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Full-size adaptive icon foreground.
+  custom_app_icon.png is a 1024×1024 yellow rounded-square with a white clock.
+  It already has its own rounded-corner shape baked in, so the transparent
+  corners act as the visual padding. No additional inset is applied here.
+  The artwork fills the full 108dp adaptive canvas so it renders large.
+-->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/custom_app_icon"
+    android:gravity="fill" />

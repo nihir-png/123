@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Alarm Clock</string>
+
+    <string name="tab_alarm">Wecker</string>
+    <string name="tab_clock">Uhr</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_stopwatch">Stoppuhr</string>
+
+    <string name="action_done">Fertig</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_select">Auswählen</string>
+    <string name="action_start">Start</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Fortsetzen</string>
+    <string name="action_reset">Zurücksetzen</string>
+    <string name="action_lap">Runde</string>
+
+    <string name="cd_settings">Einstellungen</string>
+    <string name="cd_back">Zurück</string>
+    <string name="cd_add_alarm">Wecker hinzufügen</string>
+    <string name="cd_delete_alarm">Wecker löschen</string>
+    <string name="cd_add_city">Stadt hinzufügen</string>
+    <string name="cd_remove_city">Stadt entfernen</string>
+    <string name="cd_menu">Menü</string>
+
+    <string name="alarm_empty_title">Kein Wecker gefunden</string>
+    <string name="alarm_empty_subtitle">Wecker hinzufügen, um zu starten</string>
+    <string name="delete_alarm_title">Wecker löschen?</string>
+    <string name="delete_alarm_message">Dieser Wecker wird dauerhaft entfernt.</string>
+
+    <string name="add_alarm_title">Wecker hinzufügen</string>
+    <string name="edit_alarm_title">Wecker bearbeiten</string>
+    <string name="tap_to_set_time">ZUM EINSTELLEN TIPPEN</string>
+    <string name="alarm_label_hint">Wecker-Name (z. B. Aufstehen)</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="vibrate_on_ring">Beim Klingeln vibrieren</string>
+    <string name="snooze">Schlummern</string>
+    <string name="ringtone">Klingelton</string>
+    <string name="save_alarm">Wecker speichern</string>
+    <string name="set_alarm_time">Weckzeit einstellen</string>
+    <string name="snooze_minutes">%1$d Min.</string>
+
+    <string name="clock_title">Uhr</string>
+    <string name="local_time">Ortszeit</string>
+    <string name="world_clock">Weltuhr</string>
+    <string name="no_cities_title">Keine Städte</string>
+    <string name="no_cities_subtitle">Verfolge die Zeit an mehreren Orten weltweit.</string>
+    <string name="select_city">Stadt auswählen</string>
+    <string name="city_added">Hinzugefügt</string>
+    <string name="same_time">Gleiche Zeit</string>
+
+    <string name="timer_title">Timer</string>
+    <string name="timer_hours">Stunden</string>
+    <string name="timer_minutes">Minuten</string>
+    <string name="timer_seconds">Sekunden</string>
+    <string name="timer_times_up">Zeit ist um!</string>
+
+    <string name="stopwatch_title">Stoppuhr</string>
+    <string name="stopwatch_laps_empty">Runden erscheinen hier</string>
+
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_section_general">Allgemein</string>
+    <string name="settings_section_alarm_defaults">Wecker-Standards</string>
+    <string name="settings_section_notifications">Benachrichtigung &amp; Wecker</string>
+    <string name="settings_section_app">App</string>
+    <string name="settings_language">Sprache</string>
+    <string name="settings_theme">Design</string>
+    <string name="settings_time_format">Zeitformat</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system">Systemstandard</string>
+    <string name="language_system">Systemstandard</string>
+    <string name="time_format_12">12 Stunden</string>
+    <string name="time_format_24">24 Stunden</string>
+    <string name="time_format_12_long">12 Stunden (AM/PM)</string>
+    <string name="time_format_24_long">24 Stunden</string>
+    <string name="settings_default_ringtone">Standard-Klingelton</string>
+    <string name="ringtone_default_system">Standard (System)</string>
+    <string name="settings_vibrate_default">Standardmäßig vibrieren</string>
+    <string name="settings_default_snooze">Standard-Schlummerzeit</string>
+    <string name="settings_default_volume">Standard-Weckerlautstärke</string>
+    <string name="settings_alarm_notifications">Wecker-Benachrichtigungen</string>
+    <string name="notif_enabled">Aktiviert</string>
+    <string name="notif_disabled">Deaktiviert — zum Erlauben tippen</string>
+    <string name="settings_fullscreen_alarm">Vollbild-Wecker</string>
+    <string name="fullscreen_allowed">Erlaubt</string>
+    <string name="fullscreen_tap_allow">Zum Erlauben tippen</string>
+    <string name="settings_about">Über die App</string>
+    <string name="settings_version">App-Version</string>
+    <string name="settings_privacy">Datenschutz &amp; offline</string>
+    <string name="about_title">Über Alarm Clock</string>
+    <string name="about_message">Ein klarer, schneller Wecker mit Weltuhr, Timer und Stoppuhr.\n\nVom ersten Tippen an mühelos.</string>
+    <string name="privacy_title">Datenschutz &amp; offline</string>
+    <string name="privacy_message">Diese App funktioniert vollständig offline. Deine Wecker und Einstellungen bleiben auf deinem Gerät — nichts wird erfasst, verfolgt oder geteilt. Keine Werbung, keine Konten.</string>
+    <string name="select_alarm_sound">Weckton auswählen</string>
+    <string name="snooze_minutes_long">%1$d Minuten</string>
+
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_portuguese">Português</string>
+</resources>

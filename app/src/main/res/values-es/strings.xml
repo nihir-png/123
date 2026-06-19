@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Alarm Clock</string>
+
+    <string name="tab_alarm">Alarma</string>
+    <string name="tab_clock">Reloj</string>
+    <string name="tab_timer">Temporizador</string>
+    <string name="tab_stopwatch">Cronómetro</string>
+
+    <string name="action_done">Listo</string>
+    <string name="action_ok">Aceptar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_select">Seleccionar</string>
+    <string name="action_start">Iniciar</string>
+    <string name="action_pause">Pausar</string>
+    <string name="action_resume">Reanudar</string>
+    <string name="action_reset">Reiniciar</string>
+    <string name="action_lap">Vuelta</string>
+
+    <string name="cd_settings">Ajustes</string>
+    <string name="cd_back">Atrás</string>
+    <string name="cd_add_alarm">Añadir alarma</string>
+    <string name="cd_delete_alarm">Eliminar alarma</string>
+    <string name="cd_add_city">Añadir ciudad</string>
+    <string name="cd_remove_city">Quitar ciudad</string>
+    <string name="cd_menu">Menú</string>
+
+    <string name="alarm_empty_title">No hay alarmas</string>
+    <string name="alarm_empty_subtitle">Añade una alarma para empezar</string>
+    <string name="delete_alarm_title">¿Eliminar alarma?</string>
+    <string name="delete_alarm_message">Esta alarma se eliminará permanentemente.</string>
+
+    <string name="add_alarm_title">Añadir alarma</string>
+    <string name="edit_alarm_title">Editar alarma</string>
+    <string name="tap_to_set_time">TOCA PARA AJUSTAR LA HORA</string>
+    <string name="alarm_label_hint">Etiqueta de la alarma (p. ej. Despertar)</string>
+    <string name="repeat">Repetir</string>
+    <string name="vibrate_on_ring">Vibrar al sonar</string>
+    <string name="snooze">Posponer</string>
+    <string name="ringtone">Tono</string>
+    <string name="save_alarm">Guardar alarma</string>
+    <string name="set_alarm_time">Ajustar la hora</string>
+    <string name="snooze_minutes">%1$d min</string>
+
+    <string name="clock_title">Reloj</string>
+    <string name="local_time">Hora local</string>
+    <string name="world_clock">Reloj mundial</string>
+    <string name="no_cities_title">No hay ciudades</string>
+    <string name="no_cities_subtitle">Consulta la hora en varios lugares del mundo.</string>
+    <string name="select_city">Seleccionar ciudad</string>
+    <string name="city_added">Añadida</string>
+    <string name="same_time">Misma hora</string>
+
+    <string name="timer_title">Temporizador</string>
+    <string name="timer_hours">Horas</string>
+    <string name="timer_minutes">Minutos</string>
+    <string name="timer_seconds">Segundos</string>
+    <string name="timer_times_up">¡Se acabó el tiempo!</string>
+
+    <string name="stopwatch_title">Cronómetro</string>
+    <string name="stopwatch_laps_empty">Las vueltas aparecerán aquí</string>
+
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_alarm_defaults">Valores de alarma</string>
+    <string name="settings_section_notifications">Notificaciones y alarma</string>
+    <string name="settings_section_app">Aplicación</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_time_format">Formato de hora</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_system">Predeterminado del sistema</string>
+    <string name="language_system">Predeterminado del sistema</string>
+    <string name="time_format_12">12 horas</string>
+    <string name="time_format_24">24 horas</string>
+    <string name="time_format_12_long">12 horas (AM/PM)</string>
+    <string name="time_format_24_long">24 horas</string>
+    <string name="settings_default_ringtone">Tono predeterminado</string>
+    <string name="ringtone_default_system">Predeterminado (Sistema)</string>
+    <string name="settings_vibrate_default">Vibrar de forma predeterminada</string>
+    <string name="settings_default_snooze">Posposición predeterminada</string>
+    <string name="settings_default_volume">Volumen de alarma predeterminado</string>
+    <string name="settings_alarm_notifications">Notificaciones de alarma</string>
+    <string name="notif_enabled">Activadas</string>
+    <string name="notif_disabled">Desactivadas — toca para permitir</string>
+    <string name="settings_fullscreen_alarm">Alarma a pantalla completa</string>
+    <string name="fullscreen_allowed">Permitida</string>
+    <string name="fullscreen_tap_allow">Toca para permitir</string>
+    <string name="settings_about">Acerca de la app</string>
+    <string name="settings_version">Versión de la app</string>
+    <string name="settings_privacy">Privacidad y sin conexión</string>
+    <string name="about_title">Acerca de Alarm Clock</string>
+    <string name="about_message">Un reloj despertador limpio y rápido con reloj mundial, temporizador y cronómetro.\n\nDiseñado para sentirse sencillo desde el primer toque.</string>
+    <string name="privacy_title">Privacidad y sin conexión</string>
+    <string name="privacy_message">Esta app funciona totalmente sin conexión. Tus alarmas y ajustes se quedan en tu dispositivo: no se recopila, rastrea ni comparte nada. Sin anuncios ni cuentas.</string>
+    <string name="select_alarm_sound">Seleccionar sonido de alarma</string>
+    <string name="snooze_minutes_long">%1$d minutos</string>
+
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_portuguese">Português</string>
+</resources>

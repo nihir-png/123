@@ -17,6 +17,7 @@ import androidx.core.app.NotificationCompat
 import com.designer.alarmclock.R
 import com.designer.alarmclock.data.Alarm
 import com.designer.alarmclock.data.AlarmDatabase
+import com.designer.alarmclock.data.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -115,8 +116,11 @@ class AlarmService : Service() {
             val db = AlarmDatabase.getDatabase(applicationContext)
             val alarm = db.alarmDao().getAlarmById(alarmId) ?: return@launch
 
-            // Play ringtone
-            playRingtone()
+            // Pull the user's default ringtone + volume from Settings.
+            val settings = SettingsRepository(applicationContext).current()
+
+            // Play ringtone (custom default if set, otherwise the system alarm sound)
+            playRingtone(settings.defaultRingtoneUri, settings.defaultVolume)
 
             // Vibrate
             if (alarm.isVibrate) {
@@ -133,14 +137,21 @@ class AlarmService : Service() {
 
 
 
-    private fun playRingtone() {
+    private fun playRingtone(ringtoneUriString: String, volumePercent: Int) {
+        // Resolve the chosen default ringtone, falling back to the system alarm sound.
+        val defaultUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+        val alarmUri: Uri? = if (ringtoneUriString.isNotEmpty()) {
+            runCatching { Uri.parse(ringtoneUriString) }.getOrNull() ?: defaultUri
+        } else {
+            defaultUri
+        }
+        if (alarmUri == null) return
+
+        val volume = (volumePercent.coerceIn(0, 100)) / 100f
         try {
-            var alarmUri: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            if (alarmUri == null) {
-                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-            }
             mediaPlayer = MediaPlayer().apply {
-                setDataSource(applicationContext, alarmUri!!)
+                setDataSource(applicationContext, alarmUri)
                 setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
@@ -148,11 +159,30 @@ class AlarmService : Service() {
                         .build()
                 )
                 isLooping = true
+                setVolume(volume, volume)
                 prepare()
                 start()
             }
         } catch (e: Exception) {
-            Log.e("AlarmService", "Failed to play alarm ringtone", e)
+            // A custom ringtone URI can become invalid (e.g. SD card removed).
+            // Retry once with the system default so the alarm still rings.
+            Log.e("AlarmService", "Failed to play alarm ringtone, falling back to default", e)
+            runCatching {
+                mediaPlayer?.release()
+                mediaPlayer = MediaPlayer().apply {
+                    setDataSource(applicationContext, defaultUri!!)
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    isLooping = true
+                    setVolume(volume, volume)
+                    prepare()
+                    start()
+                }
+            }
         }
     }
 

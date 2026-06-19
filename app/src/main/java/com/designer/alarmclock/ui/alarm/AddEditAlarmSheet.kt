@@ -8,36 +8,46 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.designer.alarmclock.R
 import com.designer.alarmclock.data.Alarm
 import com.designer.alarmclock.ui.theme.AlarmClockTheme
+import com.designer.alarmclock.ui.theme.Gold
 import com.designer.alarmclock.ui.theme.GoldenYellowGradient
+import com.designer.alarmclock.ui.theme.LocalAppColors
 import com.designer.alarmclock.ui.theme.LocalSpacing
+
+// Text/icons that sit on a gold surface must stay dark in BOTH themes for contrast.
+private val OnGold = Color(0xFF1A1A1A)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditAlarmSheet(
     alarmToEdit: Alarm? = null,
+    is24Hour: Boolean = false,
+    defaultVibrate: Boolean = true,
+    defaultSnoozeMinutes: Int = 10,
     onDismiss: () -> Unit,
     onDelete: (() -> Unit)? = null,
     onSave: (hour: Int, minute: Int, repeatDays: List<Int>, label: String, isVibrate: Boolean, snoozeMinutes: Int) -> Unit
 ) {
     val spacing = LocalSpacing.current
+    val appColors = LocalAppColors.current
     val scrollState = rememberScrollState()
 
     // Initialize states
@@ -46,27 +56,36 @@ fun AddEditAlarmSheet(
     val timePickerState = rememberTimePickerState(
         initialHour = initialHour,
         initialMinute = initialMinute,
-        is24Hour = false
+        is24Hour = is24Hour
     )
 
     var label by remember { mutableStateOf(alarmToEdit?.label ?: "") }
-    var isVibrate by remember { mutableStateOf(alarmToEdit?.isVibrate ?: true) }
-    var snoozeMinutes by remember { mutableStateOf(alarmToEdit?.snoozeDurationMinutes ?: 10) }
+    // New alarms inherit the user's Settings defaults; existing alarms keep their own values.
+    var isVibrate by remember { mutableStateOf(alarmToEdit?.isVibrate ?: defaultVibrate) }
+    var snoozeMinutes by remember { mutableStateOf(alarmToEdit?.snoozeDurationMinutes ?: defaultSnoozeMinutes) }
     var showTimePickerDialog by remember { mutableStateOf(false) }
-    
+
     // Repeat Days State (Sunday=7, Monday=1..Saturday=6)
-    val selectedDays = remember { mutableStateListOf<Int>().apply { 
+    val selectedDays = remember { mutableStateListOf<Int>().apply {
         alarmToEdit?.repeatDays?.let { addAll(it) }
     } }
 
-    // Render as full-screen styled dialog
+    // Render as full-screen styled dialog.
+    // decorFitsSystemWindows = false makes the dialog window draw edge-to-edge so
+    // WindowInsets (status/navigation bars) report real values inside the dialog.
+    // Without it the dialog consumes the insets, navigationBarsPadding() becomes a
+    // no-op, and the bottom "Save Alarm" CTA slides under the gesture/nav bar on
+    // real devices (the emulator's button nav happened to hide the bug).
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false
+        )
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background // Soft Cream
+            color = appColors.background
         ) {
             Column(
                 modifier = Modifier
@@ -83,16 +102,18 @@ fun AddEditAlarmSheet(
                 ) {
                     IconButton(onClick = onDismiss) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onBackground
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = appColors.textPrimary
                         )
                     }
                     Text(
-                        text = if (alarmToEdit == null) "Add Alarm" else "Edit Alarm",
+                        text = stringResource(
+                            if (alarmToEdit == null) R.string.add_alarm_title else R.string.edit_alarm_title
+                        ),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = appColors.textPrimary
                         ),
                         modifier = Modifier.padding(start = spacing.small)
                     )
@@ -102,7 +123,7 @@ fun AddEditAlarmSheet(
                         IconButton(onClick = onDelete) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete Alarm",
+                                contentDescription = stringResource(R.string.cd_delete_alarm),
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }
@@ -123,7 +144,11 @@ fun AddEditAlarmSheet(
                     // Large editable time display card
                     val hour12 = if (timePickerState.hour % 12 == 0) 12 else timePickerState.hour % 12
                     val amPm = if (timePickerState.hour < 12) "AM" else "PM"
-                    val timeString = String.format("%02d:%02d", hour12, timePickerState.minute)
+                    val timeString = if (is24Hour) {
+                        String.format("%02d:%02d", timePickerState.hour, timePickerState.minute)
+                    } else {
+                        String.format("%02d:%02d", hour12, timePickerState.minute)
+                    }
 
                     Card(
                         modifier = Modifier
@@ -131,7 +156,7 @@ fun AddEditAlarmSheet(
                             .height(140.dp)
                             .clickable { showTimePickerDialog = true },
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(
@@ -140,10 +165,10 @@ fun AddEditAlarmSheet(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "TAP TO SET TIME",
+                                text = stringResource(R.string.tap_to_set_time),
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFB800),
+                                color = Gold,
                                 letterSpacing = 1.sp
                             )
                             Spacer(modifier = Modifier.height(spacing.small))
@@ -155,16 +180,18 @@ fun AddEditAlarmSheet(
                                     text = timeString,
                                     fontSize = 56.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E1E1E)
+                                    color = appColors.textPrimary
                                 )
-                                Spacer(modifier = Modifier.width(spacing.small))
-                                Text(
-                                    text = amPm,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    modifier = Modifier.padding(bottom = 8.dp)
-                                )
+                                if (!is24Hour) {
+                                    Spacer(modifier = Modifier.width(spacing.small))
+                                    Text(
+                                        text = amPm,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = appColors.textSecondary,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -175,16 +202,21 @@ fun AddEditAlarmSheet(
                     OutlinedTextField(
                         value = label,
                         onValueChange = { label = it },
-                        placeholder = { Text("Alarm Label (e.g. Wake up)", color = Color(0xFF7E7E7E)) },
+                        placeholder = {
+                            Text(
+                                stringResource(R.string.alarm_label_hint),
+                                color = appColors.textSecondary
+                            )
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFFFB800),
-                            unfocusedBorderColor = Color(0xFFEFEFEF),
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedTextColor = Color(0xFF1E1E1E),
-                            unfocusedTextColor = Color(0xFF1E1E1E)
+                            focusedBorderColor = Gold,
+                            unfocusedBorderColor = appColors.fieldBorder,
+                            focusedContainerColor = appColors.card,
+                            unfocusedContainerColor = appColors.card,
+                            focusedTextColor = appColors.textPrimary,
+                            unfocusedTextColor = appColors.textPrimary
                         ),
                         singleLine = true
                     )
@@ -195,19 +227,19 @@ fun AddEditAlarmSheet(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(modifier = Modifier.padding(spacing.medium)) {
                             Text(
-                                text = "Repeat",
+                                text = stringResource(R.string.repeat),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E1E1E)
+                                    color = appColors.textPrimary
                                 )
                             )
                             Spacer(modifier = Modifier.height(spacing.medium))
-                            
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -226,11 +258,11 @@ fun AddEditAlarmSheet(
                                 days.forEach { (name, dayNum) ->
                                     val isSelected = selectedDays.contains(dayNum)
                                     val bgModifier = if (isSelected) {
-                                        Modifier.background(Color(0xFFFFB800))
+                                        Modifier.background(Gold)
                                     } else {
-                                        Modifier.background(Color(0xFFFAF8F5))
+                                        Modifier.background(appColors.chipUnselected)
                                     }
-                                    
+
                                     Box(
                                         modifier = Modifier
                                             .size(40.dp)
@@ -247,7 +279,7 @@ fun AddEditAlarmSheet(
                                     ) {
                                         Text(
                                             text = name,
-                                            color = if (isSelected) Color(0xFF1E1E1E) else Color(0xFF7E7E7E),
+                                            color = if (isSelected) OnGold else appColors.textSecondary,
                                             fontSize = 14.sp,
                                             fontWeight = FontWeight.Bold
                                         )
@@ -263,7 +295,7 @@ fun AddEditAlarmSheet(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Row(
@@ -274,10 +306,10 @@ fun AddEditAlarmSheet(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Vibrate on Ring",
+                                text = stringResource(R.string.vibrate_on_ring),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E1E1E)
+                                    color = appColors.textPrimary
                                 )
                             )
                             Switch(
@@ -285,9 +317,9 @@ fun AddEditAlarmSheet(
                                 onCheckedChange = { isVibrate = it },
                                 colors = SwitchDefaults.colors(
                                     checkedThumbColor = Color.White,
-                                    checkedTrackColor = Color(0xFFFFB800),
+                                    checkedTrackColor = Gold,
                                     uncheckedThumbColor = Color.White,
-                                    uncheckedTrackColor = Color(0xFFE2E2E2),
+                                    uncheckedTrackColor = appColors.toggleTrackOff,
                                     uncheckedBorderColor = Color.Transparent
                                 )
                             )
@@ -300,19 +332,19 @@ fun AddEditAlarmSheet(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(modifier = Modifier.padding(spacing.medium)) {
                             Text(
-                                text = "Snooze",
+                                text = stringResource(R.string.snooze),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E1E1E)
+                                    color = appColors.textPrimary
                                 )
                             )
                             Spacer(modifier = Modifier.height(spacing.small))
-                            
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(spacing.small)
@@ -320,8 +352,8 @@ fun AddEditAlarmSheet(
                                 val durations = listOf(5, 10, 15)
                                 durations.forEach { duration ->
                                     val isSelected = snoozeMinutes == duration
-                                    val chipBg = if (isSelected) Color(0xFFFFB800) else Color(0xFFFAF8F5)
-                                    val labelColor = if (isSelected) Color(0xFF1E1E1E) else Color(0xFF7E7E7E)
+                                    val chipBg = if (isSelected) Gold else appColors.chipUnselected
+                                    val labelColor = if (isSelected) OnGold else appColors.textSecondary
 
                                     Box(
                                         modifier = Modifier
@@ -333,7 +365,7 @@ fun AddEditAlarmSheet(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = "$duration min",
+                                            text = stringResource(R.string.snooze_minutes, duration),
                                             color = labelColor,
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Bold
@@ -350,7 +382,7 @@ fun AddEditAlarmSheet(
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Row(
@@ -362,24 +394,24 @@ fun AddEditAlarmSheet(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Ringtone",
+                                text = stringResource(R.string.ringtone),
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1E1E1E)
+                                    color = appColors.textPrimary
                                 )
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "Morning Dew",
                                     fontSize = 14.sp,
-                                    color = Color(0xFF7E7E7E),
+                                    color = appColors.textSecondary,
                                     fontWeight = FontWeight.Medium
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Icon(
-                                    imageVector = Icons.Default.KeyboardArrowRight,
-                                    contentDescription = "Go",
-                                    tint = Color(0xFF7E7E7E)
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription = null,
+                                    tint = appColors.textSecondary
                                 )
                             }
                         }
@@ -406,12 +438,12 @@ fun AddEditAlarmSheet(
                             .background(GoldenYellowGradient, shape = RoundedCornerShape(28.dp)),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent,
-                            contentColor = Color(0xFF1E1E1E)
+                            contentColor = OnGold
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
                         Text(
-                            text = "Save Alarm",
+                            text = stringResource(R.string.save_alarm),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp
@@ -428,7 +460,7 @@ fun AddEditAlarmSheet(
                 Dialog(onDismissRequest = { showTimePickerDialog = false }) {
                     Surface(
                         shape = RoundedCornerShape(24.dp),
-                        color = MaterialTheme.colorScheme.surface,
+                        color = appColors.card,
                         modifier = Modifier.padding(spacing.medium)
                     ) {
                         Column(
@@ -436,38 +468,41 @@ fun AddEditAlarmSheet(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Set Alarm Time",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                text = stringResource(R.string.set_alarm_time),
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = appColors.textPrimary
+                                ),
                                 modifier = Modifier.padding(bottom = spacing.medium)
                             )
                             TimePicker(
                                 state = timePickerState,
                                 colors = TimePickerDefaults.colors(
-                                    clockDialColor = Color(0xFFFAF8F5),
-                                    clockDialSelectedContentColor = Color(0xFF1E1E1E),
-                                    clockDialUnselectedContentColor = Color(0xFF7E7E7E),
-                                    selectorColor = Color(0xFFFFB800),
-                                    periodSelectorBorderColor = Color(0xFFEFEFEF),
-                                    periodSelectorSelectedContainerColor = Color(0xFFFFB800).copy(alpha = 0.2f),
-                                    periodSelectorUnselectedContainerColor = Color.White,
-                                    periodSelectorSelectedContentColor = Color(0xFFFFB800),
-                                    periodSelectorUnselectedContentColor = Color(0xFF7E7E7E),
-                                    timeSelectorSelectedContainerColor = Color(0xFFFFB800).copy(alpha = 0.2f),
-                                    timeSelectorUnselectedContainerColor = Color(0xFFFAF8F5),
-                                    timeSelectorSelectedContentColor = Color(0xFFFFB800),
-                                    timeSelectorUnselectedContentColor = Color(0xFF1E1E1E)
+                                    clockDialColor = appColors.chipUnselected,
+                                    clockDialSelectedContentColor = OnGold,
+                                    clockDialUnselectedContentColor = appColors.textPrimary,
+                                    selectorColor = Gold,
+                                    periodSelectorBorderColor = appColors.fieldBorder,
+                                    periodSelectorSelectedContainerColor = Gold.copy(alpha = 0.2f),
+                                    periodSelectorUnselectedContainerColor = appColors.card,
+                                    periodSelectorSelectedContentColor = Gold,
+                                    periodSelectorUnselectedContentColor = appColors.textSecondary,
+                                    timeSelectorSelectedContainerColor = Gold.copy(alpha = 0.2f),
+                                    timeSelectorUnselectedContainerColor = appColors.chipUnselected,
+                                    timeSelectorSelectedContentColor = Gold,
+                                    timeSelectorUnselectedContentColor = appColors.textPrimary
                                 )
                             )
                             Spacer(modifier = Modifier.height(spacing.medium))
                             Button(
                                 onClick = { showTimePickerDialog = false },
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFFFB800),
-                                    contentColor = Color(0xFF1E1E1E)
+                                    containerColor = Gold,
+                                    contentColor = OnGold
                                 ),
                                 shape = RoundedCornerShape(20.dp)
                             ) {
-                                Text("Select", fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.action_select), fontWeight = FontWeight.Bold)
                             }
                         }
                     }

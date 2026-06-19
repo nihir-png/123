@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.designer.alarmclock.R
 import com.designer.alarmclock.data.Alarm
+import com.designer.alarmclock.data.TimeFormat
+import com.designer.alarmclock.ui.settings.SettingsViewModel
 import com.designer.alarmclock.ui.theme.*
 
 // Day letters as shown in Figma: Sunday first. Maps to repeatDays codes
@@ -45,15 +49,20 @@ private val DayLetters = listOf(
 
 @Composable
 fun AlarmListScreen(
-    viewModel: AlarmViewModel = viewModel()
+    onOpenSettings: () -> Unit = {},
+    viewModel: AlarmViewModel = viewModel(),
+    settingsViewModel: SettingsViewModel = viewModel()
 ) {
     val alarms by viewModel.alarms.collectAsState()
+    val settings by settingsViewModel.settings.collectAsState()
+    val is24Hour = settings.timeFormat == TimeFormat.TWENTY_FOUR_HOUR
+    val appColors = LocalAppColors.current
     var showAddSheet by remember { mutableStateOf(false) }
     var alarmToEdit by remember { mutableStateOf<Alarm?>(null) }
     var alarmToDelete by remember { mutableStateOf<Alarm?>(null) }
 
     Scaffold(
-        containerColor = FigmaBackground,
+        containerColor = appColors.background,
         floatingActionButton = {
             // FAB: 66dp gold circle with a soft gold glow (Figma node 1:2160).
             Box(
@@ -75,8 +84,8 @@ fun AlarmListScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Alarm",
-                    tint = TextPrimary,
+                    contentDescription = stringResource(R.string.cd_add_alarm),
+                    tint = Color(0xFF1A1A1A),
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -85,11 +94,11 @@ fun AlarmListScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(FigmaBackground)
+                .background(appColors.background)
                 .padding(paddingValues)
         ) {
             if (alarms.isEmpty()) {
-                EmptyAlarmState()
+                EmptyAlarmState(onOpenSettings = onOpenSettings)
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
@@ -99,11 +108,15 @@ fun AlarmListScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item(span = { GridItemSpan(2) }) {
-                        AlarmHeader(modifier = Modifier.padding(bottom = 8.dp))
+                        AlarmHeader(
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            onSettingsClick = onOpenSettings
+                        )
                     }
                     items(alarms, key = { it.id }) { alarm ->
                         AlarmCard(
                             alarm = alarm,
+                            is24Hour = is24Hour,
                             onToggle = { viewModel.toggleAlarm(alarm) },
                             onClick = {
                                 alarmToEdit = alarm
@@ -118,6 +131,9 @@ fun AlarmListScreen(
             if (showAddSheet) {
                 AddEditAlarmSheet(
                     alarmToEdit = alarmToEdit,
+                    is24Hour = is24Hour,
+                    defaultVibrate = settings.defaultVibrate,
+                    defaultSnoozeMinutes = settings.defaultSnoozeMinutes,
                     onDismiss = { showAddSheet = false },
                     onDelete = alarmToEdit?.let { editing ->
                         {
@@ -149,26 +165,32 @@ fun AlarmListScreen(
             alarmToDelete?.let { alarm ->
                 AlertDialog(
                     onDismissRequest = { alarmToDelete = null },
-                    title = { Text("Delete alarm?", fontWeight = FontWeight.Bold) },
+                    title = {
+                        Text(
+                            stringResource(R.string.delete_alarm_title),
+                            fontWeight = FontWeight.Bold,
+                            color = appColors.textPrimary
+                        )
+                    },
                     text = {
                         Text(
-                            "This alarm will be removed permanently.",
+                            stringResource(R.string.delete_alarm_message),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextMuted
+                            color = appColors.textMuted
                         )
                     },
                     confirmButton = {
                         TextButton(onClick = {
                             viewModel.deleteAlarm(alarm)
                             alarmToDelete = null
-                        }) { Text("Delete", color = LightError, fontWeight = FontWeight.Bold) }
+                        }) { Text(stringResource(R.string.action_delete), color = LightError, fontWeight = FontWeight.Bold) }
                     },
                     dismissButton = {
                         TextButton(onClick = { alarmToDelete = null }) {
-                            Text("Cancel", color = TextMuted)
+                            Text(stringResource(R.string.action_cancel), color = appColors.textMuted)
                         }
                     },
-                    containerColor = Color.White
+                    containerColor = appColors.card
                 )
             }
         }
@@ -176,7 +198,11 @@ fun AlarmListScreen(
 }
 
 @Composable
-private fun AlarmHeader(modifier: Modifier = Modifier) {
+private fun AlarmHeader(
+    modifier: Modifier = Modifier,
+    onSettingsClick: () -> Unit = {}
+) {
+    val appColors = LocalAppColors.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -185,34 +211,31 @@ private fun AlarmHeader(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Alarm",
+            text = stringResource(R.string.tab_alarm),
             style = TextStyle(
                 fontFamily = Urbanist,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 36.sp,
                 lineHeight = 48.sp,
-                color = TextPrimary
+                color = appColors.textPrimary
             )
         )
-        // 44dp white circle button with a horizontal "…" menu glyph.
+        // 44dp circle button holding the Settings gear (opens the Settings screen).
+        // Same circle styling the old "…" menu used, so the header layout is unchanged.
         Box(
             modifier = Modifier
                 .size(44.dp)
                 .shadow(elevation = 10.dp, shape = CircleShape, spotColor = Color(0x241C1F26))
-                .background(Color.White, CircleShape)
-                .clickable { /* menu placeholder */ },
+                .background(appColors.card, CircleShape)
+                .clickable { onSettingsClick() },
             contentAlignment = Alignment.Center
         ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                repeat(3) {
-                    Box(
-                        modifier = Modifier
-                            .size(4.dp)
-                            .clip(CircleShape)
-                            .background(TextPrimary)
-                    )
-                }
-            }
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = stringResource(R.string.cd_settings),
+                tint = appColors.textPrimary,
+                modifier = Modifier.size(22.dp)
+            )
         }
     }
 }
@@ -222,11 +245,18 @@ fun AlarmCard(
     alarm: Alarm,
     onToggle: () -> Unit,
     onClick: () -> Unit,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    is24Hour: Boolean = false
 ) {
+    val appColors = LocalAppColors.current
     val enabled = alarm.isEnabled
     val hour12 = if (alarm.hour % 12 == 0) 12 else alarm.hour % 12
     val amPm = if (alarm.hour < 12) "AM" else "PM"
+    val timeText = if (is24Hour) {
+        String.format("%02d:%02d", alarm.hour, alarm.minute)
+    } else {
+        String.format("%02d:%02d", hour12, alarm.minute)
+    }
 
     Box(
         modifier = Modifier
@@ -241,7 +271,7 @@ fun AlarmCard(
                 ) else Modifier
             )
             .clip(RoundedCornerShape(26.dp))
-            .background(if (enabled) CardSurfaceGradient else Brush.linearGradient(listOf(Color(0xB3FFFFFF), Color(0xB3FFFFFF))))
+            .background(if (enabled) appColors.cardGradient else appColors.cardDisabled)
             .alpha(if (enabled) 1f else 0.55f)
             .combinedClickable(onClick = onClick, onLongClick = onLongClick)
             .padding(16.dp)
@@ -255,14 +285,14 @@ fun AlarmCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = if (alarm.label.isNotEmpty()) alarm.label else "Alarm",
+                text = if (alarm.label.isNotEmpty()) alarm.label else stringResource(R.string.tab_alarm),
                 style = TextStyle(
                     fontFamily = Urbanist,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     lineHeight = 20.sp,
                     letterSpacing = (-0.15).sp,
-                    color = TextMuted
+                    color = appColors.textMuted
                 ),
                 maxLines = 1
             )
@@ -277,28 +307,30 @@ fun AlarmCard(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = String.format("%02d:%02d", hour12, alarm.minute),
+                text = timeText,
                 style = TextStyle(
                     fontFamily = Urbanist,
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 38.sp,
                     lineHeight = 38.sp,
                     letterSpacing = (-1.9).sp,
-                    color = TextPrimary
+                    color = appColors.textPrimary
                 )
             )
-            Spacer(Modifier.width(6.dp))
-            Text(
-                text = amPm,
-                style = TextStyle(
-                    fontFamily = Urbanist,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                    color = TextFaint
-                ),
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
+            if (!is24Hour) {
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = amPm,
+                    style = TextStyle(
+                        fontFamily = Urbanist,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        lineHeight = 16.sp,
+                        color = appColors.textFaint
+                    ),
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
         }
 
         // Day-letter row pinned to the bottom-left (width ~125dp).
@@ -318,7 +350,7 @@ fun AlarmCard(
                         fontSize = 11.sp,
                         lineHeight = 16.5.sp,
                         letterSpacing = 0.06.sp,
-                        color = if (active) DayActive else DayInactive
+                        color = if (active) DayActive else appColors.dayInactive
                     )
                 )
             }
@@ -332,6 +364,7 @@ private fun GoldToggle(
     checked: Boolean,
     onCheckedChange: () -> Unit
 ) {
+    val appColors = LocalAppColors.current
     Box(
         modifier = Modifier
             .then(
@@ -345,7 +378,7 @@ private fun GoldToggle(
             .width(48.dp)
             .height(28.dp)
             .clip(RoundedCornerShape(14.dp))
-            .background(if (checked) GoldButtonGradient else Brush.linearGradient(listOf(ToggleTrackOff, ToggleTrackOff)))
+            .background(if (checked) GoldButtonGradient else Brush.linearGradient(listOf(appColors.toggleTrackOff, appColors.toggleTrackOff)))
             .clickable { onCheckedChange() }
     ) {
         Box(
@@ -365,20 +398,21 @@ private fun GoldToggle(
 }
 
 @Composable
-private fun EmptyAlarmState() {
+private fun EmptyAlarmState(onOpenSettings: () -> Unit = {}) {
+    val appColors = LocalAppColors.current
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AlarmHeader()
+        AlarmHeader(onSettingsClick = onOpenSettings)
 
         Spacer(modifier = Modifier.weight(1f))
 
         Image(
             painter = painterResource(id = R.drawable.alarm_empty_state),
-            contentDescription = "No alarms illustration",
+            contentDescription = stringResource(R.string.alarm_empty_title),
             modifier = Modifier
                 .fillMaxWidth(0.74f)
                 .height(208.dp),
@@ -388,27 +422,27 @@ private fun EmptyAlarmState() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "No Alarm found",
+            text = stringResource(R.string.alarm_empty_title),
             style = TextStyle(
                 fontFamily = Urbanist,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 lineHeight = 32.sp,
                 letterSpacing = (-0.89).sp,
-                color = TextPrimary
+                color = appColors.textPrimary
             ),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
-            text = "Add alarm to set goals",
+            text = stringResource(R.string.alarm_empty_subtitle),
             style = TextStyle(
                 fontFamily = Urbanist,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
                 letterSpacing = (-0.15).sp,
-                color = TextSubtle
+                color = appColors.textSubtle
             ),
             textAlign = TextAlign.Center
         )

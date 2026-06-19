@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -82,6 +83,13 @@ fun OnboardingScreen(
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
+    // Scale the hero image to a fraction of the actual screen height instead of a
+    // hardcoded 580dp. This keeps the same proportion as the Figma frame (~0.65 of
+    // the page) while fitting small phones and filling tall ones. The content also
+    // scrolls, so nothing overflows on very short screens.
+    val screenHeightDp = LocalConfiguration.current.screenHeightDp
+    val imageHeight = (screenHeightDp * 0.65f).coerceIn(340f, 600f).dp
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +114,7 @@ fun OnboardingScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(580.dp)
+                        .height(imageHeight)
                 ) {
                     Image(
                         painter = painterResource(id = page.imageRes),
@@ -138,9 +146,12 @@ fun OnboardingScreen(
                 Spacer(modifier = Modifier.height(7.dp))
 
                 // 3. Text section and Action button section
+                //    navigationBarsPadding keeps the "Next"/"Get Started" button above
+                //    the gesture/navigation bar on edge-to-edge devices.
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .navigationBarsPadding()
                         .padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

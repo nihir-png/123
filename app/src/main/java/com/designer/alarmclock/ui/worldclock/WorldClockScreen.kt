@@ -10,24 +10,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.designer.alarmclock.R
 import com.designer.alarmclock.data.WorldClockCity
 import com.designer.alarmclock.ui.theme.AlarmClockTheme
+import com.designer.alarmclock.ui.theme.Gold
+import com.designer.alarmclock.ui.theme.LocalAppColors
 import com.designer.alarmclock.ui.theme.LocalSpacing
 import java.text.SimpleDateFormat
 import java.util.*
+
+private val OnGold = Color(0xFF1A1A1A)
 
 @Composable
 fun WorldClockScreen(
@@ -35,6 +40,7 @@ fun WorldClockScreen(
 ) {
     val selectedCities by viewModel.selectedCities.collectAsState()
     val spacing = LocalSpacing.current
+    val appColors = LocalAppColors.current
     var showCityPicker by remember { mutableStateOf(false) }
 
     // Live Local Time ticker
@@ -52,17 +58,18 @@ fun WorldClockScreen(
     val dateString = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()).format(localTime)
 
     Scaffold(
+        containerColor = appColors.background,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCityPicker = true },
-                containerColor = Color(0xFFFFB800),
-                contentColor = Color(0xFF1E1E1E),
+                containerColor = Gold,
+                contentColor = OnGold,
                 shape = CircleShape,
                 elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add City",
+                    contentDescription = stringResource(R.string.cd_add_city),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -71,7 +78,7 @@ fun WorldClockScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(appColors.background)
                 .padding(paddingValues)
         ) {
             LazyColumn(
@@ -89,29 +96,22 @@ fun WorldClockScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Clock",
+                            text = stringResource(R.string.clock_title),
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 32.sp,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = appColors.textPrimary
                             )
                         )
-                        IconButton(onClick = { /* Menu */ }) {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "Menu",
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
                     }
                 }
 
-                // Featured Local Time white card
+                // Featured Local Time card
                 item {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp), // 24dp rounded corners
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = appColors.card),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(
@@ -121,14 +121,14 @@ fun WorldClockScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Local time",
+                                text = stringResource(R.string.local_time),
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = Color(0xFF7E7E7E),
+                                    color = appColors.textSecondary,
                                     fontWeight = FontWeight.Bold,
                                     letterSpacing = 1.sp
                                 )
                             )
-                            
+
                             Spacer(modifier = Modifier.height(spacing.small))
 
                             Row(
@@ -140,7 +140,7 @@ fun WorldClockScreen(
                                     style = MaterialTheme.typography.displayLarge.copy(
                                         fontSize = 64.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF1E1E1E)
+                                        color = appColors.textPrimary
                                     )
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -151,13 +151,13 @@ fun WorldClockScreen(
                                         text = ":$localSec",
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = Color(0xFF7E7E7E)
+                                        color = appColors.textSecondary
                                     )
                                     Text(
                                         text = localAmPm,
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFFFFB800) // Yellow active indicator
+                                        color = Gold
                                     )
                                 }
                             }
@@ -167,7 +167,7 @@ fun WorldClockScreen(
                             Text(
                                 text = dateString,
                                 style = MaterialTheme.typography.bodyLarge.copy(
-                                    color = Color(0xFF7E7E7E),
+                                    color = appColors.textSecondary,
                                     fontWeight = FontWeight.Bold
                                 )
                             )
@@ -182,10 +182,10 @@ fun WorldClockScreen(
                 // World Clock header label
                 item {
                     Text(
-                        text = "World Clock",
+                        text = stringResource(R.string.world_clock),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground,
+                            color = appColors.textPrimary,
                             fontSize = 22.sp
                         )
                     )
@@ -227,11 +227,12 @@ fun WorldClockItem(
     onDelete: () -> Unit
 ) {
     val spacing = LocalSpacing.current
-    
+    val appColors = LocalAppColors.current
+
     // Live updates for times
     var timeFormatted by remember { mutableStateOf(city.getCurrentTimeFormatted()) }
     var amPm by remember { mutableStateOf(city.getCurrentAmPm()) }
-    
+
     LaunchedEffect(Unit) {
         while (true) {
             timeFormatted = city.getCurrentTimeFormatted()
@@ -242,8 +243,8 @@ fun WorldClockItem(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp), // 24dp rounded corners
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = appColors.card),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -258,7 +259,7 @@ fun WorldClockItem(
                     text = city.cityName,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E1E1E),
+                        color = appColors.textPrimary,
                         fontSize = 18.sp
                     )
                 )
@@ -267,14 +268,14 @@ fun WorldClockItem(
                     Text(
                         text = city.country,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color(0xFF7E7E7E)
+                            color = appColors.textSecondary
                         )
                     )
                     Spacer(modifier = Modifier.width(spacing.small))
                     Text(
                         text = city.getTimeDifferenceString(),
                         fontSize = 12.sp,
-                        color = Color(0xFFFFB800), // UTC offset highlighted in yellow
+                        color = Gold,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -293,7 +294,7 @@ fun WorldClockItem(
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontSize = 28.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E1E1E)
+                            color = appColors.textPrimary
                         )
                     )
                     Spacer(modifier = Modifier.width(2.dp))
@@ -301,7 +302,7 @@ fun WorldClockItem(
                         text = amPm,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF7E7E7E),
+                        color = appColors.textSecondary,
                         modifier = Modifier.padding(bottom = 2.dp)
                     )
                 }
@@ -309,7 +310,7 @@ fun WorldClockItem(
                 IconButton(onClick = onDelete) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Remove City",
+                        contentDescription = stringResource(R.string.cd_remove_city),
                         tint = MaterialTheme.colorScheme.error.copy(alpha = 0.5f),
                         modifier = Modifier.size(20.dp)
                     )
@@ -328,12 +329,13 @@ fun CityPickerSheet(
     onCitySelected: (PredefinedCity) -> Unit
 ) {
     val spacing = LocalSpacing.current
-    
+    val appColors = LocalAppColors.current
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = MaterialTheme.colorScheme.background, // Cream background
-        dragHandle = { BottomSheetDefaults.DragHandle(color = Color(0xFFE2E2E2)) }
+        containerColor = appColors.background,
+        dragHandle = { BottomSheetDefaults.DragHandle(color = appColors.toggleTrackOff) }
     ) {
         Column(
             modifier = Modifier
@@ -342,16 +344,16 @@ fun CityPickerSheet(
                 .padding(horizontal = spacing.medium)
         ) {
             Text(
-                text = "Select City",
+                text = stringResource(R.string.select_city),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = appColors.textPrimary
                 ),
                 modifier = Modifier
                     .padding(vertical = spacing.small)
                     .align(Alignment.CenterHorizontally)
             )
-            
+
             Spacer(modifier = Modifier.height(spacing.medium))
 
             LazyColumn(
@@ -362,17 +364,16 @@ fun CityPickerSheet(
                 verticalArrangement = Arrangement.spacedBy(spacing.small)
             ) {
                 val addedTimezones = addedCities.map { it.timezoneId }.toSet()
-                
+
                 items(predefinedCities) { city ->
                     val isAlreadyAdded = addedTimezones.contains(city.timezoneId)
-                    
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
                             .background(
-                                if (isAlreadyAdded) Color(0xFFFAF8F5).copy(alpha = 0.5f)
-                                else Color.White
+                                if (isAlreadyAdded) appColors.chipUnselected else appColors.card
                             )
                             .clickable(enabled = !isAlreadyAdded) {
                                 onCitySelected(city)
@@ -386,37 +387,35 @@ fun CityPickerSheet(
                                 text = city.cityName,
                                 style = MaterialTheme.typography.bodyLarge.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isAlreadyAdded) Color(0xFF7E7E7E).copy(alpha = 0.5f)
-                                            else Color(0xFF1E1E1E)
+                                    color = if (isAlreadyAdded) appColors.textSecondary else appColors.textPrimary
                                 )
                             )
                             Text(
                                 text = city.country,
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = Color(0xFF7E7E7E).copy(
-                                        alpha = if (isAlreadyAdded) 0.5f else 1f
-                                    )
+                                    color = appColors.textSecondary
                                 )
                             )
                         }
-                        
+
                         if (isAlreadyAdded) {
                             Text(
-                                text = "Added",
+                                text = stringResource(R.string.city_added),
                                 fontSize = 12.sp,
-                                color = Color(0xFF7E7E7E).copy(alpha = 0.5f),
+                                color = appColors.textSecondary,
                                 fontWeight = FontWeight.Bold
                             )
                         } else {
                             val tz = TimeZone.getTimeZone(city.timezoneId)
                             val now = System.currentTimeMillis()
                             val diffHours = (tz.getOffset(now) - TimeZone.getDefault().getOffset(now)) / (1000L * 60 * 60)
-                            val diffStr = if (diffHours == 0L) "Same time" else if (diffHours > 0L) "+${diffHours}h" else "${diffHours}h"
-                            
+                            val diffStr = if (diffHours == 0L) stringResource(R.string.same_time)
+                                else if (diffHours > 0L) "+${diffHours}h" else "${diffHours}h"
+
                             Text(
                                 text = diffStr,
                                 fontSize = 12.sp,
-                                color = Color(0xFFFFB800),
+                                color = Gold,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -432,6 +431,7 @@ private fun EmptyWorldClockState(
     onAddClick: () -> Unit
 ) {
     val spacing = LocalSpacing.current
+    val appColors = LocalAppColors.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -443,103 +443,57 @@ private fun EmptyWorldClockState(
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(appColors.card)
                 .padding(spacing.medium),
             contentAlignment = Alignment.Center
         ) {
             Text("🌐", fontSize = 40.sp)
         }
-        
+
         Spacer(modifier = Modifier.height(spacing.large))
-        
+
         Text(
-            text = "No Cities Added",
+            text = stringResource(R.string.no_cities_title),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
+                color = appColors.textPrimary
             ),
             textAlign = TextAlign.Center
         )
-        
+
         Spacer(modifier = Modifier.height(spacing.small))
-        
+
         Text(
-            text = "Track time in multiple locations around the world.",
-            style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF7E7E7E)),
+            text = stringResource(R.string.no_cities_subtitle),
+            style = MaterialTheme.typography.bodyMedium.copy(color = appColors.textSecondary),
             textAlign = TextAlign.Center,
             modifier = Modifier.widthIn(max = 240.dp)
         )
     }
 }
 
-@Preview(name = "World Clock Screen Light", showSystemUi = true)
+@Preview(name = "World Clock Light", showSystemUi = true)
 @Composable
 fun WorldClockScreenLightPreview() {
     AlarmClockTheme(darkTheme = false) {
-        WorldClockScreenPreviewHelper(
-            listOf(
-                WorldClockCity(id = 1, cityName = "Tokyo", country = "Japan", timezoneId = "Asia/Tokyo"),
-                WorldClockCity(id = 2, cityName = "New York", country = "United States", timezoneId = "America/New_York"),
-                WorldClockCity(id = 3, cityName = "London", country = "United Kingdom", timezoneId = "Europe/London")
+        Surface(color = LocalAppColors.current.background) {
+            WorldClockItem(
+                city = WorldClockCity(id = 1, cityName = "Tokyo", country = "Japan", timezoneId = "Asia/Tokyo"),
+                onDelete = {}
             )
-        )
+        }
     }
 }
 
+@Preview(name = "World Clock Dark", showSystemUi = true)
 @Composable
-fun WorldClockScreenPreviewHelper(cities: List<WorldClockCity>) {
-    val spacing = LocalSpacing.current
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-                containerColor = Color(0xFFFFB800),
-                contentColor = Color(0xFF1E1E1E),
-                shape = CircleShape
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add City")
-            }
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues)
-                .padding(spacing.medium),
-            verticalArrangement = Arrangement.spacedBy(spacing.medium)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = spacing.small),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Clock", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 32.sp))
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
-                }
-            }
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(modifier = Modifier.padding(spacing.large), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Local time", color = Color(0xFF7E7E7E), fontWeight = FontWeight.Bold)
-                    Row(verticalAlignment = Alignment.Bottom) {
-                        Text("09:49", style = MaterialTheme.typography.displayLarge.copy(fontSize = 64.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1E1E)))
-                        Text("AM", fontSize = 16.sp, color = Color(0xFFFFB800), fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 8.dp))
-                    }
-                    Text("Friday, 12 June", color = Color(0xFF7E7E7E), fontWeight = FontWeight.Bold)
-                }
-            }
-
-            Text("World Clock", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 22.sp))
-
-            cities.forEach { city ->
-                WorldClockItem(city = city, onDelete = {})
-            }
+fun WorldClockScreenDarkPreview() {
+    AlarmClockTheme(darkTheme = true) {
+        Surface(color = LocalAppColors.current.background) {
+            WorldClockItem(
+                city = WorldClockCity(id = 2, cityName = "London", country = "United Kingdom", timezoneId = "Europe/London"),
+                onDelete = {}
+            )
         }
     }
 }

@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Alarm Clock</string>
+
+    <string name="tab_alarm">अलार्म</string>
+    <string name="tab_clock">घड़ी</string>
+    <string name="tab_timer">टाइमर</string>
+    <string name="tab_stopwatch">स्टॉपवॉच</string>
+
+    <string name="action_done">हो गया</string>
+    <string name="action_ok">ठीक है</string>
+    <string name="action_cancel">रद्द करें</string>
+    <string name="action_delete">हटाएँ</string>
+    <string name="action_select">चुनें</string>
+    <string name="action_start">शुरू</string>
+    <string name="action_pause">रोकें</string>
+    <string name="action_resume">फिर शुरू</string>
+    <string name="action_reset">रीसेट</string>
+    <string name="action_lap">लैप</string>
+
+    <string name="cd_settings">सेटिंग्स</string>
+    <string name="cd_back">वापस</string>
+    <string name="cd_add_alarm">अलार्म जोड़ें</string>
+    <string name="cd_delete_alarm">अलार्म हटाएँ</string>
+    <string name="cd_add_city">शहर जोड़ें</string>
+    <string name="cd_remove_city">शहर हटाएँ</string>
+    <string name="cd_menu">मेन्यू</string>
+
+    <string name="alarm_empty_title">कोई अलार्म नहीं</string>
+    <string name="alarm_empty_subtitle">शुरू करने के लिए अलार्म जोड़ें</string>
+    <string name="delete_alarm_title">अलार्म हटाएँ?</string>
+    <string name="delete_alarm_message">यह अलार्म स्थायी रूप से हटा दिया जाएगा।</string>
+
+    <string name="add_alarm_title">अलार्म जोड़ें</string>
+    <string name="edit_alarm_title">अलार्म संपादित करें</string>
+    <string name="tap_to_set_time">समय सेट करने के लिए टैप करें</string>
+    <string name="alarm_label_hint">अलार्म का नाम (जैसे जागना)</string>
+    <string name="repeat">दोहराएँ</string>
+    <string name="vibrate_on_ring">बजने पर कंपन</string>
+    <string name="snooze">स्नूज़</string>
+    <string name="ringtone">रिंगटोन</string>
+    <string name="save_alarm">अलार्म सहेजें</string>
+    <string name="set_alarm_time">अलार्म का समय सेट करें</string>
+    <string name="snooze_minutes">%1$d मिनट</string>
+
+    <string name="clock_title">घड़ी</string>
+    <string name="local_time">स्थानीय समय</string>
+    <string name="world_clock">विश्व घड़ी</string>
+    <string name="no_cities_title">कोई शहर नहीं जोड़ा</string>
+    <string name="no_cities_subtitle">दुनिया भर के कई स्थानों का समय देखें।</string>
+    <string name="select_city">शहर चुनें</string>
+    <string name="city_added">जोड़ा गया</string>
+    <string name="same_time">वही समय</string>
+
+    <string name="timer_title">टाइमर</string>
+    <string name="timer_hours">घंटे</string>
+    <string name="timer_minutes">मिनट</string>
+    <string name="timer_seconds">सेकंड</string>
+    <string name="timer_times_up">समय समाप्त!</string>
+
+    <string name="stopwatch_title">स्टॉपवॉच</string>
+    <string name="stopwatch_laps_empty">लैप यहाँ दिखेंगे</string>
+
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_general">सामान्य</string>
+    <string name="settings_section_alarm_defaults">अलार्म डिफ़ॉल्ट</string>
+    <string name="settings_section_notifications">सूचना और अलार्म</string>
+    <string name="settings_section_app">ऐप</string>
+    <string name="settings_language">भाषा</string>
+    <string name="settings_theme">थीम</string>
+    <string name="settings_time_format">समय प्रारूप</string>
+    <string name="theme_light">हल्का</string>
+    <string name="theme_dark">गहरा</string>
+    <string name="theme_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="language_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="time_format_12">12 घंटे</string>
+    <string name="time_format_24">24 घंटे</string>
+    <string name="time_format_12_long">12 घंटे (AM/PM)</string>
+    <string name="time_format_24_long">24 घंटे</string>
+    <string name="settings_default_ringtone">डिफ़ॉल्ट रिंगटोन</string>
+    <string name="ringtone_default_system">डिफ़ॉल्ट (सिस्टम)</string>
+    <string name="settings_vibrate_default">डिफ़ॉल्ट रूप से कंपन</string>
+    <string name="settings_default_snooze">डिफ़ॉल्ट स्नूज़</string>
+    <string name="settings_default_volume">डिफ़ॉल्ट अलार्म वॉल्यूम</string>
+    <string name="settings_alarm_notifications">अलार्म सूचनाएँ</string>
+    <string name="notif_enabled">सक्षम</string>
+    <string name="notif_disabled">अक्षम — अनुमति देने के लिए टैप करें</string>
+    <string name="settings_fullscreen_alarm">फ़ुल-स्क्रीन अलार्म</string>
+    <string name="fullscreen_allowed">अनुमत</string>
+    <string name="fullscreen_tap_allow">अनुमति देने के लिए टैप करें</string>
+    <string name="settings_about">ऐप के बारे में</string>
+    <string name="settings_version">ऐप संस्करण</string>
+    <string name="settings_privacy">गोपनीयता और ऑफ़लाइन</string>
+    <string name="about_title">Alarm Clock के बारे में</string>
+    <string name="about_message">विश्व घड़ी, टाइमर और स्टॉपवॉच के साथ एक साफ़, तेज़ अलार्म घड़ी।\n\nपहले टैप से ही आसान लगने के लिए डिज़ाइन किया गया।</string>
+    <string name="privacy_title">गोपनीयता और ऑफ़लाइन</string>
+    <string name="privacy_message">यह ऐप पूरी तरह ऑफ़लाइन काम करती है। आपके अलार्म और सेटिंग्स आपके डिवाइस पर ही रहते हैं — कुछ भी एकत्र, ट्रैक या साझा नहीं किया जाता। कोई विज्ञापन नहीं, कोई खाता नहीं।</string>
+    <string name="select_alarm_sound">अलार्म ध्वनि चुनें</string>
+    <string name="snooze_minutes_long">%1$d मिनट</string>
+
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_portuguese">Português</string>
+</resources>

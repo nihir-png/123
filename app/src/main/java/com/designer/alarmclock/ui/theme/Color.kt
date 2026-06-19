@@ -60,7 +60,7 @@ val DotInactive = Color(0xFFE1E1E7)         // inactive page dot (#e1e1e7)
 val ToggleTrackOff = Color(0xFFE7E7EC)      // off toggle track (#e7e7ec)
 val NavActive = Color(0xFFE6A900)           // bottom-nav active (#e6a900)
 val NavInactive = Color(0xFF898989)         // bottom-nav inactive (#898989)
-val NavBarBackground = Color(0xD9FFFFFF)    // 85% white bottom-nav bar
+val NavBarBackground = Color(0xFFFFFFFF)    // solid white bottom-nav bar (opaque so the background does not show through)
 
 // Near-vertical gold gradient (~172°) used by buttons, active dots, toggles.
 val GoldButtonGradient = Brush.verticalGradient(

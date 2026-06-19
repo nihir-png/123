@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive launcher icon (API 26+). Both layers derive from the EXACT source
+  artwork: custom_app_icon.png (via @drawable/ic_launcher_foreground at 0% inset).
+  Background is the gold gradient sampled from the icon edges so there is NO
+  white padding ring and no fallback to the old generated PNG.
+-->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@drawable/ic_launcher_background" />
     <foreground android:drawable="@drawable/ic_launcher_foreground" />

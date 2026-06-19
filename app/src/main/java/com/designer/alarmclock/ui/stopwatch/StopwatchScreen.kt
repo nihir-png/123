@@ -4,26 +4,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.designer.alarmclock.R
 import com.designer.alarmclock.ui.theme.AlarmClockTheme
+import com.designer.alarmclock.ui.theme.Gold
 import com.designer.alarmclock.ui.theme.GoldenYellowGradient
+import com.designer.alarmclock.ui.theme.LocalAppColors
 import com.designer.alarmclock.ui.theme.LocalSpacing
+
+private val OnGold = Color(0xFF1A1A1A)
 
 @Composable
 fun StopwatchScreen(
@@ -33,6 +35,7 @@ fun StopwatchScreen(
     val isRunning by viewModel.isRunning.collectAsState()
     val laps by viewModel.laps.collectAsState()
     val spacing = LocalSpacing.current
+    val appColors = LocalAppColors.current
 
     // Format: MM:SS:CC (where CC is centiseconds)
     val minutes = (elapsedTime % (1000 * 60 * 60)) / (1000 * 60)
@@ -40,11 +43,10 @@ fun StopwatchScreen(
     val centiseconds = (elapsedTime % 1000) / 10
     val timeStr = String.format("%02d:%02d:%02d", minutes, seconds, centiseconds)
 
-    Scaffold { paddingValues ->
+    Scaffold(containerColor = appColors.background) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
                 .padding(horizontal = spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -60,20 +62,13 @@ fun StopwatchScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Stopwatch",
+                    text = stringResource(R.string.stopwatch_title),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = appColors.textPrimary
                     )
                 )
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menu",
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.weight(0.4f))
@@ -84,7 +79,7 @@ fun StopwatchScreen(
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontSize = 64.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E1E1E) // Charcoal
+                    color = appColors.textPrimary
                 ),
                 textAlign = TextAlign.Center
             )
@@ -98,10 +93,10 @@ fun StopwatchScreen(
                     .padding(vertical = spacing.medium),
                 horizontalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
-                // Left: Lap or Reset button (styled minimal white card style)
+                // Left: Lap or Reset button (styled minimal card style)
                 val isLapResetEnabled = isRunning || elapsedTime > 0
-                val leftButtonText = if (isRunning) "Lap" else "Reset"
-                
+                val leftButtonText = if (isRunning) stringResource(R.string.action_lap) else stringResource(R.string.action_reset)
+
                 Button(
                     onClick = {
                         if (isRunning) {
@@ -115,10 +110,10 @@ fun StopwatchScreen(
                         .weight(1f)
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
-                        contentColor = Color(0xFF1E1E1E),
-                        disabledContainerColor = Color.White.copy(alpha = 0.5f),
-                        disabledContentColor = Color(0xFF7E7E7E).copy(alpha = 0.5f)
+                        containerColor = appColors.card,
+                        contentColor = appColors.textPrimary,
+                        disabledContainerColor = appColors.card.copy(alpha = 0.5f),
+                        disabledContentColor = appColors.textSecondary.copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(28.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
@@ -127,7 +122,7 @@ fun StopwatchScreen(
                 }
 
                 // Right: Start or Pause button (styled yellow gradient)
-                val rightButtonText = if (isRunning) "Pause" else "Start"
+                val rightButtonText = if (isRunning) stringResource(R.string.action_pause) else stringResource(R.string.action_start)
                 Button(
                     onClick = {
                         if (isRunning) {
@@ -140,13 +135,13 @@ fun StopwatchScreen(
                         .weight(1f)
                         .height(56.dp)
                         .background(
-                            if (isRunning) Brush.linearGradient(listOf(Color(0xFFFF5252), Color(0xFFFF2D55))) 
-                            else GoldenYellowGradient, 
+                            if (isRunning) Brush.linearGradient(listOf(Color(0xFFFF5252), Color(0xFFFF2D55)))
+                            else GoldenYellowGradient,
                             shape = RoundedCornerShape(28.dp)
                         ),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent,
-                        contentColor = if (isRunning) Color.White else Color(0xFF1E1E1E)
+                        contentColor = if (isRunning) Color.White else OnGold
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -162,8 +157,8 @@ fun StopwatchScreen(
                     .fillMaxWidth()
                     .weight(1f)
                     .padding(bottom = spacing.large),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(24.dp), // 24dp corners
+                colors = CardDefaults.cardColors(containerColor = appColors.card),
+                shape = RoundedCornerShape(24.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 if (laps.isEmpty()) {
@@ -172,9 +167,9 @@ fun StopwatchScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Laps will show up here",
+                            text = stringResource(R.string.stopwatch_laps_empty),
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color(0xFF7E7E7E)
+                                color = appColors.textSecondary
                             )
                         )
                     }
@@ -184,8 +179,8 @@ fun StopwatchScreen(
                     ) {
                         itemsIndexed(laps.reversed(), key = { _, lap -> lap.lapNumber }) { index, lap ->
                             val isEven = index % 2 == 0
-                            val rowColor = if (isEven) Color.White else Color(0xFFFAF8F5) // Alternate row tints
-                            
+                            val rowColor = if (isEven) appColors.card else appColors.chipUnselected
+
                             LapRow(
                                 lap = lap,
                                 isLatest = index == 0,
@@ -208,6 +203,7 @@ fun LapRow(
     isLatest: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val appColors = LocalAppColors.current
     val minutes = (lap.lapTime % (1000 * 60 * 60)) / (1000 * 60)
     val seconds = (lap.lapTime % (1000 * 60)) / 1000
     val centiseconds = (lap.lapTime % 1000) / 10
@@ -224,23 +220,23 @@ fun LapRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = String.format("Lap %02d", lap.lapNumber),
+            text = String.format("%s %02d", stringResource(R.string.action_lap), lap.lapNumber),
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = if (isLatest) Color(0xFFFFB800) else Color(0xFF1E1E1E)
+                color = if (isLatest) Gold else appColors.textPrimary
             )
         )
         Text(
             text = "+$lapTimeStr",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = if (isLatest) Color(0xFFFFB800) else Color(0xFF7E7E7E)
+                color = if (isLatest) Gold else appColors.textSecondary
             )
         )
         Text(
             text = totalTimeStr,
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E1E1E)
+                color = appColors.textPrimary
             )
         )
     }
@@ -250,84 +246,18 @@ fun LapRow(
 @Composable
 fun StopwatchScreenLightPreview() {
     AlarmClockTheme(darkTheme = false) {
-        StopwatchScreenPreviewHelper(
-            elapsedTime = 65420L, // 1m 5s 42cs
-            laps = listOf(
-                Lap(1, 40200L, 40200L),
-                Lap(2, 25220L, 65420L)
-            )
-        )
+        Surface(color = LocalAppColors.current.background) {
+            LapRow(lap = Lap(1, 40200L, 40200L), isLatest = true)
+        }
     }
 }
 
+@Preview(name = "Stopwatch Dark Theme", showSystemUi = true)
 @Composable
-fun StopwatchScreenPreviewHelper(
-    elapsedTime: Long,
-    laps: List<Lap>
-) {
-    val spacing = LocalSpacing.current
-    val minutes = (elapsedTime % (1000 * 60 * 60)) / (1000 * 60)
-    val seconds = (elapsedTime % (1000 * 60)) / 1000
-    val centiseconds = (elapsedTime % 1000) / 10
-    val timeStr = String.format("%02d:%02d:%02d", minutes, seconds, centiseconds)
-
-    Scaffold { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues)
-                .padding(horizontal = spacing.large),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(spacing.medium))
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = spacing.small),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Stopwatch", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 32.sp))
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(0.4f))
-
-            Text(
-                text = timeStr,
-                style = MaterialTheme.typography.displayLarge.copy(fontSize = 64.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1E1E1E)),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.weight(0.4f))
-
-            Row(modifier = Modifier.fillMaxWidth().padding(vertical = spacing.medium), horizontalArrangement = Arrangement.spacedBy(spacing.medium)) {
-                Button(onClick = {}, modifier = Modifier.weight(1f).height(56.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color(0xFF1E1E1E)), shape = RoundedCornerShape(28.dp), elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)) {
-                    Text("Lap", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                }
-                Button(onClick = {}, modifier = Modifier.weight(1f).height(56.dp).background(GoldenYellowGradient, shape = RoundedCornerShape(28.dp)), colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF1E1E1E)), contentPadding = PaddingValues(0.dp)) {
-                    Text("Start", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-
-            Spacer(modifier = Modifier.height(spacing.medium))
-
-            Card(
-                modifier = Modifier.fillMaxWidth().weight(1f).padding(bottom = spacing.large),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(24.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    itemsIndexed(laps.reversed()) { index, lap ->
-                        val isEven = index % 2 == 0
-                        val rowColor = if (isEven) Color.White else Color(0xFFFAF8F5)
-                        LapRow(lap = lap, isLatest = index == 0, modifier = Modifier.fillMaxWidth().background(rowColor).padding(spacing.medium))
-                    }
-                }
-            }
+fun StopwatchScreenDarkPreview() {
+    AlarmClockTheme(darkTheme = true) {
+        Surface(color = LocalAppColors.current.background) {
+            LapRow(lap = Lap(2, 25220L, 65420L), isLatest = false)
         }
     }
 }

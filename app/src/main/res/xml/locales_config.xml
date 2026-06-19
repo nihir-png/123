@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Locales the app offers in Settings → Language. Only English ships with
+  translated strings today; the others are declared so the per-app language
+  picker (Android 13+) works and selections persist. Untranslated locales fall
+  back to the default English resources, so nothing breaks.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="es" />
+    <locale android:name="fr" />
+    <locale android:name="de" />
+    <locale android:name="hi" />
+    <locale android:name="pt" />
+</locale-config>

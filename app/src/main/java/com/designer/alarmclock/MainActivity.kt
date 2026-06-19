@@ -14,38 +14,66 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.core.content.ContextCompat
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.designer.alarmclock.data.LocaleHelper
+import com.designer.alarmclock.data.SettingsRepository
+import com.designer.alarmclock.data.ThemeMode
 import com.designer.alarmclock.ui.screens.MainScreen
 import com.designer.alarmclock.ui.screens.OnboardingScreen
+import com.designer.alarmclock.ui.settings.SettingsViewModel
 import com.designer.alarmclock.ui.theme.AlarmClockTheme
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-// Extension property for DataStore
-private val Context.dataStore by preferencesDataStore(name = "settings")
-private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
-
 class MainActivity : ComponentActivity() {
+
+    // Apply the saved language to every resource lookup in this Activity (incl.
+    // Compose stringResource). Reads the persisted tag synchronously so the very
+    // first frame is already in the right language. recreate() (on language change)
+    // re-runs this with the new tag.
+    override fun attachBaseContext(newBase: Context) {
+        val tag = LocaleHelper.persistedTag(newBase)
+        super.attachBaseContext(LocaleHelper.wrap(newBase, tag))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Read initial value synchronously to avoid launch UI flicker
         val isCompleted = runBlocking {
-            applicationContext.dataStore.data.first()[ONBOARDING_COMPLETED] ?: false
+            SettingsRepository(applicationContext).current().onboardingCompleted
         }
 
         setContent {
-            AlarmClockTheme {
+            // Theme mode comes from Settings (default LIGHT). DataStore hasn't loaded
+            // on the very first frame, so we start from the default (LIGHT) — no flash.
+            val settingsViewModel: SettingsViewModel = viewModel()
+            val appSettings by settingsViewModel.settings.collectAsState()
+            val darkTheme = when (appSettings.themeMode) {
+                ThemeMode.LIGHT -> false
+                ThemeMode.DARK -> true
+                ThemeMode.SYSTEM -> isSystemInDarkTheme()
+            }
+
+            // Keep status/navigation bar icons readable: dark icons on the light
+            // theme, light icons on the dark theme.
+            val view = LocalView.current
+            LaunchedEffect(darkTheme) {
+                val controller = WindowCompat.getInsetsController(window, view)
+                controller.isAppearanceLightStatusBars = !darkTheme
+                controller.isAppearanceLightNavigationBars = !darkTheme
+            }
+
+            AlarmClockTheme(darkTheme = darkTheme) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -113,17 +141,12 @@ class MainActivity : ComponentActivity() {
                     }
 
                     var showOnboarding by remember { mutableStateOf(!isCompleted) }
-                    val coroutineScope = rememberCoroutineScope()
 
                     if (showOnboarding) {
                         OnboardingScreen(
                             onFinished = {
-                                coroutineScope.launch {
-                                    applicationContext.dataStore.edit { preferences ->
-                                        preferences[ONBOARDING_COMPLETED] = true
-                                    }
-                                    showOnboarding = false
-                                }
+                                settingsViewModel.completeOnboarding()
+                                showOnboarding = false
                             }
                         )
                     } else {

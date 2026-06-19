@@ -1,3 +1,116 @@
 <resources>
     <string name="app_name">Alarm Clock</string>
+
+    <!-- Bottom navigation tabs -->
+    <string name="tab_alarm">Alarm</string>
+    <string name="tab_clock">Clock</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_stopwatch">Stopwatch</string>
+
+    <!-- Common actions -->
+    <string name="action_done">Done</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_select">Select</string>
+    <string name="action_start">Start</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_lap">Lap</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_settings">Settings</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_add_alarm">Add Alarm</string>
+    <string name="cd_delete_alarm">Delete Alarm</string>
+    <string name="cd_add_city">Add City</string>
+    <string name="cd_remove_city">Remove City</string>
+    <string name="cd_menu">Menu</string>
+
+    <!-- Alarm home -->
+    <string name="alarm_empty_title">No Alarm found</string>
+    <string name="alarm_empty_subtitle">Add alarm to set goals</string>
+    <string name="delete_alarm_title">Delete alarm?</string>
+    <string name="delete_alarm_message">This alarm will be removed permanently.</string>
+
+    <!-- Add / Edit alarm -->
+    <string name="add_alarm_title">Add Alarm</string>
+    <string name="edit_alarm_title">Edit Alarm</string>
+    <string name="tap_to_set_time">TAP TO SET TIME</string>
+    <string name="alarm_label_hint">Alarm Label (e.g. Wake up)</string>
+    <string name="repeat">Repeat</string>
+    <string name="vibrate_on_ring">Vibrate on Ring</string>
+    <string name="snooze">Snooze</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="save_alarm">Save Alarm</string>
+    <string name="set_alarm_time">Set Alarm Time</string>
+    <string name="snooze_minutes">%1$d min</string>
+
+    <!-- World clock -->
+    <string name="clock_title">Clock</string>
+    <string name="local_time">Local time</string>
+    <string name="world_clock">World Clock</string>
+    <string name="no_cities_title">No Cities Added</string>
+    <string name="no_cities_subtitle">Track time in multiple locations around the world.</string>
+    <string name="select_city">Select City</string>
+    <string name="city_added">Added</string>
+    <string name="same_time">Same time</string>
+
+    <!-- Timer -->
+    <string name="timer_title">Timer</string>
+    <string name="timer_hours">Hours</string>
+    <string name="timer_minutes">Minutes</string>
+    <string name="timer_seconds">Seconds</string>
+    <string name="timer_times_up">Time\'s Up!</string>
+
+    <!-- Stopwatch -->
+    <string name="stopwatch_title">Stopwatch</string>
+    <string name="stopwatch_laps_empty">Laps will show up here</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_alarm_defaults">Alarm Defaults</string>
+    <string name="settings_section_notifications">Notification &amp; Alarm</string>
+    <string name="settings_section_app">App</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_time_format">Time format</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System default</string>
+    <string name="language_system">System default</string>
+    <string name="time_format_12">12-hour</string>
+    <string name="time_format_24">24-hour</string>
+    <string name="time_format_12_long">12-hour (AM/PM)</string>
+    <string name="time_format_24_long">24-hour</string>
+    <string name="settings_default_ringtone">Default ringtone</string>
+    <string name="ringtone_default_system">Default (System)</string>
+    <string name="settings_vibrate_default">Vibrate by default</string>
+    <string name="settings_default_snooze">Default snooze</string>
+    <string name="settings_default_volume">Default alarm volume</string>
+    <string name="settings_alarm_notifications">Alarm notifications</string>
+    <string name="notif_enabled">Enabled</string>
+    <string name="notif_disabled">Disabled — tap to allow</string>
+    <string name="settings_fullscreen_alarm">Full-screen alarm</string>
+    <string name="fullscreen_allowed">Allowed</string>
+    <string name="fullscreen_tap_allow">Tap to allow</string>
+    <string name="settings_about">About app</string>
+    <string name="settings_version">App version</string>
+    <string name="settings_privacy">Privacy &amp; offline</string>
+    <string name="about_title">About Alarm Clock</string>
+    <string name="about_message">A clean, fast alarm clock with world clock, timer and stopwatch.\n\nDesigned to feel effortless from the very first tap.</string>
+    <string name="privacy_title">Privacy &amp; offline</string>
+    <string name="privacy_message">This app works fully offline. Your alarms and settings stay on your device — nothing is collected, tracked, or shared. No ads, no accounts.</string>
+    <string name="select_alarm_sound">Select alarm sound</string>
+    <string name="snooze_minutes_long">%1$d minutes</string>
+
+    <!-- Language names (always shown in their own language) -->
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_portuguese">Português</string>
 </resources>
